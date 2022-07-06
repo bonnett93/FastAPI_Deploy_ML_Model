@@ -6,6 +6,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 import pickle
+import numpy as np
 
 app = FastAPI()
 templates = Jinja2Templates(directory="frontend/templates")
@@ -28,6 +29,7 @@ async def predict_one(Year: str, Present_Price: str, Kms_Driven: str, Owner: str
 
     car_data = [Year, Present_Price, Kms_Driven, Owner, Fuel_Type_Diesel,
                 Fuel_Type_Petrol, Seller_Type_Individual, Transmission_Manual]
+    car_data = np.array(car_data, dtype=float)
     make_prediction = model.predict([car_data])
     output = round(make_prediction[0], 2)
     return {'You can Sell Your Car for {}'.format(output)}
