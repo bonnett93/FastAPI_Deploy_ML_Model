@@ -22,7 +22,7 @@ async def predict_one(Year: str, Present_Price: str, Kms_Driven: str, Owner: str
             Fuel_Type_Diesel: str, Fuel_Type_Petrol: str,
             Seller_Type_Individual: str, Transmission_Manual: str):
     """Predict data view"""
-    filename = 'ML_model/random_forest_model.pkl'
+    filename = 'ML_model/linear_regresor_model.pkl'
     with open(filename, 'rb') as f:
         model = pickle.load(f)
 

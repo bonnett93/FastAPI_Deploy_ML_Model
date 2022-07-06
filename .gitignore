@@ -1,0 +1,6 @@
+venv/
+tests/
+ML_model/archivoprueba.txt
+*.pkl
+__pycache__/
+*/__pycache__/

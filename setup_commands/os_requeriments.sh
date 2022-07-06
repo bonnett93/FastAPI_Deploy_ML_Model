@@ -5,4 +5,4 @@ sudo apt-get install git-lfs
 git lfs install
 git lfs track "*.psd"
 git add .gitattributes
-uvicorn fast_api.mlapi:app --reload
+uvicorn backend.main:app --reload
