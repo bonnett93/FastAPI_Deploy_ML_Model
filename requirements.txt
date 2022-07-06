@@ -1,0 +1,9 @@
+openpyxl
+pandas
+sqlalchemy
+wheel
+mysqlclient
+datasist
+sklearn
+fastapi
+uvicorn[standard]
