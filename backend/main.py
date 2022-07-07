@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
-"""ML api"""
+"""main"""
 import re
 import uvicorn
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import JSONResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
 import pickle
-import numpy as np
+from backend.models.car import Car
+from typing import List
 
 app = FastAPI()
 templates = Jinja2Templates(directory="frontend/templates")
@@ -15,24 +16,35 @@ templates = Jinja2Templates(directory="frontend/templates")
 @app.get('/')
 def home(request: Request):
     """Home page"""
-    return templates.TemplateResponse('index.html', {'request':request})
+    return templates.TemplateResponse('index.html', {'request': request})
 
 
-@app.get('/predict_one')
-async def predict_one(Year: str, Present_Price: str, Kms_Driven: str, Owner: str,
-            Fuel_Type_Diesel: str, Fuel_Type_Petrol: str,
-            Seller_Type_Individual: str, Transmission_Manual: str):
+@app.post('/predict_one')
+async def predict_one(car_data: Car):
     """Predict data view"""
     filename = 'ML_model/linear_regresor_model.pkl'
     with open(filename, 'rb') as f:
         model = pickle.load(f)
 
-    car_data = [Year, Present_Price, Kms_Driven, Owner, Fuel_Type_Diesel,
-                Fuel_Type_Petrol, Seller_Type_Individual, Transmission_Manual]
-    car_data = np.array(car_data, dtype=float)
-    make_prediction = model.predict([car_data])
+    data = list(car_data.__dict__.values())
+    make_prediction = model.predict([data])
     output = round(make_prediction[0], 2)
-    return {'You can Sell Your Car for {}'.format(output)}
+    return JSONResponse(content={'Car predict price': output})
+
+
+@app.post('/predict_many')
+async def predict_many(cars_data: List[Car]):
+    """ Predict data view """
+    filename = 'ML_model/linear_regresor_model.pkl'
+    with open(filename, 'rb') as f:
+        model = pickle.load(f)
+
+    data = []
+    for car in cars_data:
+        data.append(list(car.__dict__.values()))
+    make_prediction = model.predict(data)
+    output = make_prediction.tolist()
+    return JSONResponse(content={'Cars predict prices': output})
 
 
 if __name__ == '__main__':
